@@ -6,4 +6,5 @@ await database.initialize()
 
 app.listen(APP_PORT, () => {
   console.log(`server is running on port ${APP_PORT}`)
+  console.log(`server is running on port http://localhost:${APP_PORT}/`)
 })

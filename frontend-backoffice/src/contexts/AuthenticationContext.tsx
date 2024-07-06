@@ -28,7 +28,7 @@ export function AuthenticationProvider({ children }: PropsWithChildren) {
   const [accessToken, setAccessToken] = useState<string | null>(null)
   const signIn = useMutation({
     mutationFn: async ({ username, password }: IAuthenticationSignInPayload) => {
-      const response = await api.post('/auth/sign-in', { username, password })
+      const response = await api.post('/auth/sign-in', { username, password });
 
       setAccessToken(response.data.access_token)
     },

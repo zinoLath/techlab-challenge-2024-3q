@@ -8,7 +8,8 @@ export class RootUser1719291159178 implements MigrationInterface {
             email: 'root@root.com',
             username: 'root',
             password: 'root',
-            profile: 'sudo'
+            profile: 'sudo',
+            available: "1"
         })
     }
 

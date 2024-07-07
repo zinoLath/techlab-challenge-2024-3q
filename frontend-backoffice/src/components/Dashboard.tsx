@@ -20,10 +20,10 @@ export function Dashboard() {
     mutationFn: async (user: Partial<IUser>) => {
       var req;
       try {
-        req = await api.patch(`/users/${user.id}`, {available: !user.available}, {
+        req = await api.patch(`/users/${user.id}`, {available: user.available == "1" ? "0" : "1"}, {
           headers: { Authorization: `Bearer ${accessToken}` }
         })
-        user.available = !user.available
+        user.available = user.available == "1" ? "0" : "1"
         setAvailable(user.available)
       } catch (error : any) {
       }
@@ -66,7 +66,7 @@ export function Dashboard() {
                   <ListItemIcon>
                     <QuestionAnswerIcon />
                   </ListItemIcon>
-                  <ListItemText primary={available ? "Disponível" : "Indisponível"}/>
+                  <ListItemText primary={available == "1" ? "Disponível" : "Indisponível"}/>
                 </ListItemButton>
               </ListItem>
               {useHasScope('users:*', 'users:read') && (

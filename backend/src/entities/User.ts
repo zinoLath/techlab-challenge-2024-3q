@@ -16,7 +16,7 @@ export class User {
   public password!: string
 
   @Column()
-  public available!: boolean
+  public available!: string
 
   @Column('enum', { enum: Object.keys(profiles) })
   public profile!: keyof typeof profiles

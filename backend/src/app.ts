@@ -105,6 +105,12 @@ app.put(
   _catch((req, res) => singleton(UsersController).save(req, res))
 )
 
+app.post(
+  '/users',
+  scope('users:*', 'users:write', req => req.body?.id && [`users:${req.body.id}:*`, `users:${req.body.id}:write`]),
+  _catch((req, res) => singleton(UsersController).create(req, res))
+)
+
 app.get(
   '/users/:userId',
   scope('users:*', 'users:read', req => [`users:${req.params.userId}:*`, `users:${req.params.userId}:read`]),

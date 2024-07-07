@@ -36,7 +36,39 @@ export class UsersController {
    * PUT /users
    */
   public async save(req: Request, res: Response) {
+
     const user = await this.repository.save(req.body)
+
+    res.status(201)
+      .header('Location', `/users/${user.id}`)
+      .json(user)
+  }
+
+  /**
+   * POST /users
+   */
+  public async create(req: Request, res: Response) {
+    if(req.body.username.length == 0){
+      return res.status(400).json({ message: "Username cannot be empty" })
+    }
+    if(req.body.email.length == 0){
+      return res.status(400).json({ message: "Email cannot be empty" })
+    }
+    if(req.body.profile.length == 0){
+      return res.status(400).json({ message: "Profile cannot be empty" })
+    }
+    if(req.body.password.length == 0){
+      return res.status(400).json({ message: "Password cannot be empty" })
+    }
+    const existingUser = await this.repository.findOne({
+      where: { username: req.body.username }
+    })
+    if(existingUser){
+      return res.status(400).json({ message: "User already exists" })
+    }
+    
+    const user = await this.repository.save(req.body)
+    console.log(user)
 
     res.status(201)
       .header('Location', `/users/${user.id}`)

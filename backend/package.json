@@ -16,6 +16,7 @@
     "express": "^4.19.2",
     "express-requests-logger": "^4.0.0",
     "express-winston": "^4.2.0",
+    "fix-esm": "^1.0.1",
     "jsonwebtoken": "^9.0.2",
     "lodash.get": "^4.4.2",
     "pg": "^8.12.0",

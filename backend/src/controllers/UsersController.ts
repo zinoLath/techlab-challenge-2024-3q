@@ -60,14 +60,8 @@ export class UsersController {
     if(req.body.password.length == 0){
       return res.status(400).json({ message: "Password cannot be empty" })
     }
-    const existingUser = await this.repository.findOne({
-      where: { username: req.body.username }
-    })
-    if(existingUser){
-      return res.status(400).json({ message: "User already exists" })
-    }
     
-    const user = await this.repository.save(req.body)
+    const user = await this.repository.save(this.repository.create(req.body))
     console.log(user)
 
     res.status(201)

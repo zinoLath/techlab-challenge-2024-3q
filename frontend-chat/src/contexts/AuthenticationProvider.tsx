@@ -14,7 +14,7 @@ export interface IAuthenticationContext {
 export const AuthenticationContext = createContext(null as unknown as IAuthenticationContext)
 
 export function AuthenticationProvider({ children }: PropsWithChildren) {
-  const [accessToken, setAccessToken] = useState(() => localStorage.getItem('session:access-token') ?? null)
+  const [accessToken, setAccessToken] = useState(() => sessionStorage.getItem('session:access-token') ?? null)
 
   const { consumerId } = useMemo(() => {
     if (!accessToken) return { token: null, consumerId: null }
@@ -55,7 +55,7 @@ export function AuthenticationProvider({ children }: PropsWithChildren) {
 
       setAccessToken(access_token)
 
-      localStorage.setItem('session:access-token', access_token)
+      sessionStorage.setItem('session:access-token', access_token)
     }
   })
 

@@ -75,8 +75,8 @@ export class UsersController {
     
     const user = await this.repository.save(this.repository.create(req.body))
     console.log(user)
-    // @ts-expect-error
     res.status(201)
+    // @ts-ignore
       .header('Location', `/users/${user.id}`) 
       .json(user)
   }

@@ -36,6 +36,18 @@ export class UsersController {
    * PUT /users
    */
   public async save(req: Request, res: Response) {
+    if(req.body.username.length == 0){
+      return res.status(400).json({ message: "Username cannot be empty" })
+    }
+    if(req.body.email.length == 0){
+      return res.status(400).json({ message: "Email cannot be empty" })
+    }
+    if(req.body.profile.length == 0){
+      return res.status(400).json({ message: "Profile cannot be empty" })
+    }
+    if(req.body.password.length == 0){
+      return res.status(400).json({ message: "Password cannot be empty" })
+    }
 
     const user = await this.repository.save(req.body)
 
@@ -63,9 +75,9 @@ export class UsersController {
     
     const user = await this.repository.save(this.repository.create(req.body))
     console.log(user)
-
+    // @ts-expect-error
     res.status(201)
-      .header('Location', `/users/${user.id}`)
+      .header('Location', `/users/${user.id}`) 
       .json(user)
   }
 

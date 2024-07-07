@@ -3,6 +3,7 @@ export interface IUser {
   username: string
   email: string
   profile: string
+  available: boolean
   password: string
   createdAt: string
   updatedAt: string

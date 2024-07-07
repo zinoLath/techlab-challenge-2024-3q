@@ -107,7 +107,7 @@ app.put(
 
 app.get(
   '/users/:userId',
-  scope('users:*', 'users:read', req => [`users:${req.params.id}:*`, `users:${req.params.id}:read`]),
+  scope('users:*', 'users:read', req => [`users:${req.params.userId}:*`, `users:${req.params.userId}:read`]),
   _catch((req, res) =>
     singleton(UsersController).findOne(req, res)
   )

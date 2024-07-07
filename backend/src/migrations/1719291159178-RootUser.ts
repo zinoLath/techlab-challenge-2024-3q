@@ -7,7 +7,7 @@ export class RootUser1719291159178 implements MigrationInterface {
         await queryRunner.manager.insert(User, {
             email: 'root@root.com',
             username: 'root',
-            password: 'root',
+            password: '$2b$10$cECyb0GNoioWdmnMPC0Sy.abmlygLO2UDFIdjBt.sjSm66TSOlo8y',
             profile: 'sudo'
         })
     }

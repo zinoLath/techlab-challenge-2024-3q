@@ -4,6 +4,7 @@ import { User } from "../entities/User.js";
 import jwt from 'jsonwebtoken'
 import { APP_NAME, SECRET } from "../constants/env.js";
 import { profiles } from "../constants/profiles.js";
+import bcrypt from "bcrypt";
 
 export class AuthenticationController {
   /**
@@ -25,8 +26,11 @@ export class AuthenticationController {
 
     if (!user) throw new Error('User not found')
 
-    console.log(user.password)
-    console.log(req.body.password)
+    const salt = await bcrypt.genSalt(10)
+    const encryptedPassword = await bcrypt.hash(req.body.password,salt)
+
+    req.body.password = encryptedPassword
+    
     if (user.password !== req.body.password) throw new Error('Invalid password')
 
     const profile = profiles[user.profile]

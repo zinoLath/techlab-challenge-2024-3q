@@ -26,7 +26,7 @@ export function CreateUser() {
           setMessageStyle({color: "green"})
           setMessage("User created succesfully")
         }
-      } catch (error) {  
+      } catch (error: any) {  
         req = error.response
         if(req.status == 400)
         {

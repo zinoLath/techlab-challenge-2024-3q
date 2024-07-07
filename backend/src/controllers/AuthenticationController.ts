@@ -25,6 +25,8 @@ export class AuthenticationController {
 
     if (!user) throw new Error('User not found')
 
+    console.log(user.password)
+    console.log(req.body.password)
     if (user.password !== req.body.password) throw new Error('Invalid password')
 
     const profile = profiles[user.profile]

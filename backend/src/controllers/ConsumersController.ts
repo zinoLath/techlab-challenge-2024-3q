@@ -47,7 +47,7 @@ export class ConsumersController {
         {
           audience: APP_NAME,
           issuer: APP_NAME,
-          expiresIn: '10m',
+          expiresIn: '1h',
           subject: `consumer:${consumer.id}`
         },
         (err, token) => {

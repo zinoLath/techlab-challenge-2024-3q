@@ -54,7 +54,7 @@ export function Chat() {
       }
     },
     enabled: !!conversation,
-    refetchInterval: 20 * 1000
+    refetchInterval: 1 * 1000
   })
 
   const [temporaryConversationMessages, setTemporaryConversationMessages] = useState<TemporaryConversationMessage[]>([])

@@ -44,6 +44,29 @@ export class ConversationsController {
     
     return res.json(conversation)
   }
+  
+    /**
+   * GET /conversations/user/:user-id
+   */
+  public async findUser(req: Request<{ userId: string }>, res: Response) {
+    const user = await database.getRepository(User).findOne({
+      where: { id: req.params.userId }
+    })
+    if(!user) {
+      return res.status(404).json({ message: `Not found User with ID ${req.params.userId}` })
+    }
+    const [conversations, count]  = await this.repository.findAndCount({
+      relations: { consumer: true, user: true },
+      loadRelationIds: true,
+      where: { user: {id: user.id} }
+    })
+
+
+    if (!conversations)
+      return res.status(404).json({ message: `Not found Conversation with User ID ${req.params.userId}` })
+    
+    res.json({ count, conversations })
+  }
 
   /**
    * PUT /conversations

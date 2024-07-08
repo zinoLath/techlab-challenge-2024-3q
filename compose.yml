@@ -6,9 +6,9 @@ services:
     networks:
       - techlab_net
     environment:
-      - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=supersecret
-      - POSTGRES_DB=techlab
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
 
   frontend_backoffice:
     build:
@@ -37,10 +37,11 @@ services:
       - database
     command: yarn workspace techlab-challenge-2024-3q-backend typeorm migration:run
     environment:
-      - APP_PORT=8080
+      - APP_PORT=5434
       - NODE_ENV=development
-      - DATABASE_URL=postgres://root:supersecret@database:5432/techlab
+      - DATABASE_URL=${DATABASE_URL}
       - DATABASE_MIGRATIONS_RUN=true
+      - SECRET=${SECRET}
     networks:
       - techlab_net
     depends_on:
@@ -52,9 +53,10 @@ services:
     links:
       - database
     environment:
-      - APP_PORT=8080
+      - APP_PORT=5434
       - NODE_ENV=development
-      - DATABASE_URL=postgres://root:supersecret@database:5432/techlab
+      - DATABASE_URL=${DATABASE_URL}
+      - SECRET=${SECRET}
     networks:
       - techlab_net
     depends_on:
@@ -65,7 +67,7 @@ services:
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
     ports:
-      - 8080:8080
+      - 5434:5434
     networks: 
       - techlab_net
     depends_on:

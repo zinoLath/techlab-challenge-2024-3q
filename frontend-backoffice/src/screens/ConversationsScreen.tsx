@@ -1,5 +1,5 @@
 import { Grid } from "@mui/material";
-import { useAccessToken } from "../hooks/useAuthenticationContext.js";
+import { useAccessToken, useAuthenticatedUser } from "../hooks/useAuthenticationContext";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "../services/api.js";
 import { ConversationItem } from "../components/ConversationItem.js";
@@ -7,14 +7,19 @@ import { IConversation } from "../interfaces/IConversation.js";
 import { Outlet } from "react-router-dom";
 
 export function ConversationsScreen() {
-  // const user = useAuthenticatedUser()
+  const user = useAuthenticatedUser()
   const accessToken = useAccessToken()
 
   const query = useQuery({
     queryKey: ['conversations'],
     queryFn: async () => {
-      const response = await api.get('/conversations', {
+      const response = await api.get(`/conversations/user/${user.id}`, {
         headers: { Authorization: `Bearer ${accessToken}` }
+      })
+      console.log(response.data)
+      console.log(response.data as {
+        count: number
+        conversations: IConversation[]
       })
 
       return response.data as {

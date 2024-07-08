@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { Consumer } from "../entities/Consumer.js";
 import { database } from "../services/database.js";
 import { Conversation } from "../entities/Conversation.js";
+import { User } from "../entities/User.js";
 import jwt from 'jsonwebtoken'
 import { APP_NAME, SECRET } from "../constants/env.js";
 import { FindOptionsWhere } from "typeorm";
@@ -46,7 +47,7 @@ export class ConsumersController {
         {
           audience: APP_NAME,
           issuer: APP_NAME,
-          expiresIn: '10m',
+          expiresIn: '1h',
           subject: `consumer:${consumer.id}`
         },
         (err, token) => {
@@ -148,6 +149,31 @@ export class ConsumersController {
 
     const messages: Record<string, unknown>[] = Array.isArray(req.body?.messages) ? req.body.messages : []
 
+    const users = await database.getRepository(User).find({
+      where: { available: "1" }
+    })
+    
+    var leastActiveUser = users[0];
+    var leastActiveUserCount = await database.getRepository(Conversation).count({
+        where: { user: {id: users[0].id}}
+      });''
+    for(const user of users)
+    {
+      if(user == leastActiveUser)
+      {
+        continue
+      }
+      const convCount = await database.getRepository(Conversation).count({
+        where: { user: {id: user.id}}
+      })
+      if(convCount < leastActiveUserCount)
+      {
+        leastActiveUser = user
+        leastActiveUserCount = convCount
+      }
+    }
+    console.log(leastActiveUser)
+
     const conversation = await database.getRepository(Conversation).save({
       consumer,
       messages: messages.map((message, index) => {
@@ -173,6 +199,7 @@ export class ConsumersController {
         })
       }),
       subject: req.body.subject,
+      user: leastActiveUser
     })
 
     res.status(201)

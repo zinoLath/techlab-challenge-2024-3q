@@ -1,5 +1,10 @@
 import { Box, Drawer, Divider, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
 import { Link, Outlet } from "react-router-dom";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { api } from "../services/api";
+import { useAccessToken, useAuthenticatedUser } from "../hooks/useAuthenticationContext";
+import { IUser } from "../interfaces/IUser";
+import { useState } from "react";
 import { useHasScope } from "../hooks/useAuthenticationContext.js";
 import PeopleIcon from '@mui/icons-material/People'
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
@@ -7,6 +12,28 @@ import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 const drawerWidth = 240;
 
 export function Dashboard() {
+  const accessToken = useAccessToken()
+  const user = useAuthenticatedUser()
+  const [available,setAvailable] = useState(user.available)
+
+  const save = useMutation({
+    mutationFn: async (user: Partial<IUser>) => {
+      var req;
+      try {
+        req = await api.patch(`/users/${user.id}`, {available: user.available == "1" ? "0" : "1"}, {
+          headers: { Authorization: `Bearer ${accessToken}` }
+        })
+        user.available = user.available == "1" ? "0" : "1"
+        setAvailable(user.available)
+      } catch (error : any) {
+      }
+    }
+  })
+
+  const handleAvailable = async () => {
+    console.log("test")
+    save.mutate(user)
+  }
   return (
     <Box sx={{ display: 'flex' }}>
       <Box
@@ -34,6 +61,14 @@ export function Dashboard() {
                   </ListItemButton>
                 </ListItem>
               </Link>
+              <ListItem disablePadding onClick={handleAvailable}>
+                <ListItemButton>
+                  <ListItemIcon>
+                    <QuestionAnswerIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={available == "1" ? "Disponível" : "Indisponível"}/>
+                </ListItemButton>
+              </ListItem>
               {useHasScope('users:*', 'users:read') && (
                 <Link to='/users'>
                   <ListItem disablePadding>

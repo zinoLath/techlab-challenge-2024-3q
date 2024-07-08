@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { User } from "../entities/User.js";
 import { database } from "../services/database.js";
+import bcrypt from "bcrypt";
 
 export class UsersController {
   protected get repository() {
@@ -36,10 +37,63 @@ export class UsersController {
    * PUT /users
    */
   public async save(req: Request, res: Response) {
+    if(req.body.username.length == 0){
+      return res.status(400).json({ message: "Username cannot be empty" })
+    }
+    if(req.body.email.length == 0){
+      return res.status(400).json({ message: "Email cannot be empty" })
+    }
+    if(req.body.profile.length == 0){
+      return res.status(400).json({ message: "Profile cannot be empty" })
+    }
+    if(req.body.password.length == 0){
+      return res.status(400).json({ message: "Password cannot be empty" })
+    }
+
+    const salt = await bcrypt.genSalt(10)
+    const encryptedPassword = await bcrypt.hash(req.body.password,salt)
+
+    req.body.password = encryptedPassword
+
     const user = await this.repository.save(req.body)
+
+    user.password = ""
 
     res.status(201)
       .header('Location', `/users/${user.id}`)
+      .json(user)
+  }
+
+  /**
+   * POST /users
+   */
+  public async create(req: Request, res: Response) {
+    if(req.body.username.length == 0){
+      return res.status(400).json({ message: "Username cannot be empty" })
+    }
+    if(req.body.email.length == 0){
+      return res.status(400).json({ message: "Email cannot be empty" })
+    }
+    if(req.body.profile.length == 0){
+      return res.status(400).json({ message: "Profile cannot be empty" })
+    }
+    if(req.body.password.length == 0){
+      return res.status(400).json({ message: "Password cannot be empty" })
+    }
+    
+
+    const salt = await bcrypt.genSalt(10)
+    const encryptedPassword = await bcrypt.hash(req.body.password,salt)
+
+    req.body.password = encryptedPassword
+
+    const user = await this.repository.save(this.repository.create(req.body))
+
+    // @ts-ignore
+    user.password = ""
+    res.status(201)
+    // @ts-ignore
+      .header('Location', `/users/${user.id}`) 
       .json(user)
   }
 
@@ -57,6 +111,8 @@ export class UsersController {
       this.repository.merge(user, req.body)
     )
 
+    user.password = "";
+
     res.json(user)
   }
 
@@ -71,6 +127,8 @@ export class UsersController {
     if (!user) return res.status(404).json({ message: `Not found User with ID ${req.params.userId}` })
 
     await this.repository.softRemove(user)
+
+    user.password = ""
 
     res.json(user)
   }
